@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<leafHouseComponents>
+    <sensor attachedGpioPin="2" type="CONCURRENT">
+        <name>Sensor</name>
+        <location>Cochera</location>
+        <description>Sensor de puerta o ventana</description>          
+        <pinPullResistance>PULL_DOWN</pinPullResistance>
+        <onEvent></onEvent>
+        <shutdownOptions enabled="true">
+            <pinState>LOW</pinState>
+        </shutdownOptions>
+    </sensor>
+    <sensor attachedGpioPin="3" type="EVENT_FIRED">
+        <name>Sensor</name>
+        <location>Cochera</location>
+        <description>Sensor de puerta o ventana</description>          
+        <pinPullResistance>PULL_DOWN</pinPullResistance>
+        <onEvent>CAM</onEvent>
+        <shutdownOptions enabled="true">
+            <pinState>LOW</pinState>
+        </shutdownOptions>
+    </sensor>
+
+    
+
+    <actuator attachedGpioPin="4">
+        <name>Led rojo</name>
+        <location>Cochera</location>
+        <description>LED CTM TERRIBLE DE ROJO</description> 
+        <preDefinedFunction>INTERNET_ACCESS_LED</preDefinedFunction>
+        <shutdownOptions enabled="true">
+            <unexport>true</unexport>
+            <pinState>LOW</pinState>
+        </shutdownOptions>
+        <defaultPinState>LOW</defaultPinState>
+    </actuator>   
+    <actuator attachedGpioPin="5">
+        <name>Led rojo</name>
+        <location>Cochera</location>
+        <description>Sensor de puerta o ventana</description> 
+        <preDefinedFunction>INTERNET_ACCESS_LED</preDefinedFunction>
+        <shutdownOptions enabled="true">
+            <unexport>true</unexport>
+            <pinState>LOW</pinState>
+        </shutdownOptions>
+        <defaultPinState>HIGH</defaultPinState>
+    </actuator>
+
+</leafHouseComponents>
