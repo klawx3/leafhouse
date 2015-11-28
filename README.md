@@ -1,0 +1,1 @@
+Leafhouse is a security project using RaspberryPi2 + PI4J + JavaMail + Hibernate + Rest (Jersey) + Grizzly2 HTTP Server
