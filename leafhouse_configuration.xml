@@ -7,18 +7,14 @@ and open the template in the editor.
 
 
 <leafHouseConfiguration>
-    <>
-    
-    <users>
-        <user>
-            <mail>klawx3@gmail.com</mail>
-            <name>Cristian</name>
-        </user>
-        <user>
-            <mail>klawx3@gmail.com</mail>
-            <name>Cristian</name>
-        </user>
-    </users>
-    
-    
+
+    <mainUser>
+        <name>leafhouse_new</name>
+        <gmailPassword>testtest</gmailPassword>
+        <gmail>leafhouse.chile@gmail.com</gmail>        
+    </mainUser>
+    <security>
+        <functionBreakTimeMillis>100000</functionBreakTimeMillis>        
+    </security>
+
 </leafHouseConfiguration>

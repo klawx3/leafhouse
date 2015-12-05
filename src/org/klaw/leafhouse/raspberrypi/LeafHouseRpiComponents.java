@@ -10,7 +10,8 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 import org.klaw.leafhouse.ws.service.SecurityService;
 
-import org.klaw.binding.LeafHouseComponents.Sensor;
+import org.klaw.binding.components.LeafHouseComponents.Sensor;
+import org.klaw.leafhouse.mail.GMailSender;
 /**
  *
  * @author Klaw Strife
@@ -18,10 +19,12 @@ import org.klaw.binding.LeafHouseComponents.Sensor;
 public class LeafHouseRpiComponents implements GpioPinListenerDigital {
 
     private final ComponentsBuilder builder;
+    private GMailSender gmailSender;
 
     @SuppressWarnings("LeakingThisInConstructor")
-    public LeafHouseRpiComponents(org.klaw.binding.LeafHouseComponents leafHouseComponents) {
-
+    public LeafHouseRpiComponents(org.klaw.binding.components.LeafHouseComponents leafHouseComponents,
+            GMailSender gmailSender) {
+        this.gmailSender = gmailSender;
         builder = new ComponentsBuilder(leafHouseComponents);
         builder.addListener(this);
         builder.buildComponents();

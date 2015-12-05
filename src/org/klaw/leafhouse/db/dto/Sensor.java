@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import org.hibernate.annotations.NaturalId;
+import org.klaw.binding.components.LeafHouseComponents;
 import org.klaw.leafhouse.types.SensorType;
 
 /**
@@ -37,20 +38,37 @@ import org.klaw.leafhouse.types.SensorType;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class Sensor implements Serializable {
-    @Id @GeneratedValue @XmlElement
+
+    @Id
+    @GeneratedValue
+    @XmlElement
     private int sensorId;
     @XmlElement
     private String sensorName;
     @XmlElement
     private String description;
-    @NaturalId @XmlElement
+    @NaturalId
+    @XmlElement
     private int sensorGpioPin;
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER,targetEntity = Location.class) @JoinColumn(name = "fkSensorToLocation") @XmlElement
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Location.class)
+    @JoinColumn(name = "fkSensorToLocation")
+    @XmlElement
     private Location sensorLocation;
-    @Enumerated @XmlElement
+    @Enumerated
+    @XmlElement
     private SensorType sensorType;
-    @OneToMany(cascade = CascadeType.ALL,targetEntity = SensorState.class,fetch = FetchType.LAZY,mappedBy = "sensor")
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = SensorState.class, fetch = FetchType.LAZY, mappedBy = "sensor")
     private List<SensorState> sensorStates;
+
+    public Sensor() {
+    }
+
+    public Sensor(String sensorName, String description, Location sensorLocation, SensorType sensorType) {
+        this.sensorName = sensorName;
+        this.description = description;
+        this.sensorLocation = sensorLocation;
+        this.sensorType = sensorType;
+    }
 
     public int getSensorId() {
         return sensorId;
@@ -108,9 +126,17 @@ public class Sensor implements Serializable {
         this.description = description;
     }
 
+    public boolean isEqualsToFileSensor(LeafHouseComponents.Sensor sensor) {
+        return sensor.getAttachedGpioPin().intValue() == sensorGpioPin
+                && sensor.getName().equals(sensorName)
+                && sensor.getDescription().equals(description)
+                && sensor.getLocation().equals(sensorLocation.getLocationName())
+                && sensor.getType().equals(sensorType.toString());
+    }
 
-   
-    
-    
-    
+    public static Sensor convertFileSensor(LeafHouseComponents.Sensor sensor, Location location) {
+        return new Sensor(sensor.getName(), sensor.getDescription(),
+                location, SensorType.valueOf(sensor.getType()));
+    }
+
 }

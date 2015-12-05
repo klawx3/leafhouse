@@ -23,13 +23,13 @@ import org.klaw.leafhouse.ws.service.SensorService;
 public class SensorsResource {
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Sensor> getSensors(){
         return SensorService.getSensors();
     }
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{sensorId}")
     public Sensor getSensor(@PathParam("sensorId") int sensorId){
         return SensorService.getSensor(sensorId);

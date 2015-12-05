@@ -28,7 +28,7 @@ import org.klaw.leafhouse.ws.service.UserService;
 public class UsersResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<User> getUsers(@QueryParam("start") int start,
              @QueryParam("end") int end) {
         System.out.println("start" + start);
@@ -37,22 +37,22 @@ public class UsersResource {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_XML)
-    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public User createUser(User user) {
         return UserService.createUser(user);
     }
 
     @Path("/{userName}")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public User getUser(@PathParam("userName") String userName) {
         return UserService.getUser(userName);
     }
     
     @Path("/{userName}")
     @DELETE
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public User delUser(@PathParam("userName") String userName) {
         return UserService.deleteUser(userName);
     }

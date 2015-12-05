@@ -1,6 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <schemas xmlns='http://xml.netbeans.org/schema/JAXBWizConfig' destdir='build/generated-sources/jaxb' projectName='LeafHouseOnlyHibernateDb' version='1.0'>
-	<schema type='-xmlschema' package='org.klaw.binding' name='lhcmpbind'>
+	<schema type='-xmlschema' package='org.klaw.binding.config' name='lhconfig_bind'>
+		<xjc-options>
+		</xjc-options>
+		<schema-sources>
+			<schema-source location='xml-resources/jaxb/lhconfig_bind/lhconfig_klaw.xsd' origLocation='lhconfig_klaw.xsd'/>
+		</schema-sources>
+		<bindings>
+		</bindings>
+		<catalog/>
+	</schema>
+	<schema type='-xmlschema' package='org.klaw.binding.components' name='lhcmpbind'>
 		<xjc-options>
 		</xjc-options>
 		<schema-sources>

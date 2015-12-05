@@ -19,16 +19,9 @@ import javax.ws.rs.container.ContainerRequestFilter;
  */
 public class AuthorizationRequestFilter implements ContainerRequestFilter {
 
-//    @Override
-//    public ContainerRequest filter(ContainerRequest cr) {
-//
-//        //MultivaluedMap<String, String> requestHeaders = cr.getRequestHeaders();
-//        return cr;
-//    }
-
     @Override
     public void filter(ContainerRequestContext crc) throws IOException {
-        System.out.println("Pasando por filter <3");
+        //System.out.println("Pasando por filter <3");
     }
 
 }

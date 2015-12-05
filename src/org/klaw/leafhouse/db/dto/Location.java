@@ -23,8 +23,14 @@ public class Location implements Serializable {
     @Id
     @GeneratedValue
     private int locationId;
-
     private String locationName;
+
+    public Location() {
+    }
+
+    public Location(String locationName) {
+        this.locationName = locationName;
+    }
 
     @XmlElement
     public long getLocationId() {
@@ -43,12 +49,5 @@ public class Location implements Serializable {
     public void setLocationName(String locationName) {
         this.locationName = locationName;
     }
-
-
-
-
-
-    
-    
-    
+ 
 }

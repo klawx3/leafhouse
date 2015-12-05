@@ -22,14 +22,14 @@ import org.klaw.leafhouse.ws.service.LocationService;
 public class LocationsResource {
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Location> getLocations(){
         return LocationService.getAllLocations();
     }
     
     @Path("{locationId}")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public Location getLocation(@PathParam("locationId") int locationId){
         return LocationService.getLocation( locationId);
     }

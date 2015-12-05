@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,28 +24,38 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Klaw Strife
  */
-
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class User implements Serializable {
-    @Id @Column(length = 25) @XmlElement
+
+    @Id
+    @GeneratedValue
+    private long userId;
+    @XmlElement
+    @Column(unique = true)
     private String userName;
-    @Column(nullable = false) @XmlElement
+    @Column(nullable = false)
+    @XmlElement
     private String userPassword;
-    @Column(nullable = false) @XmlElement
+    @Column(nullable = false)
+    @XmlElement
     private String userEmail;
-    @Column(nullable = false) @XmlElement
+    @Column(nullable = false)
+    @XmlElement
     private boolean userAdmin;
-    @Column(nullable = false) @XmlElement
+    @Column(nullable = false)
+    @XmlElement
     private boolean userLeafHouse;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = SecurityState.class, mappedBy = "user")
     private List<SecurityState> securityStates;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = SensorState.class, mappedBy = "user")
     private List<SensorState> sensorStates;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActuatorState.class,mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = ActuatorState.class, mappedBy = "user")
     private List<ActuatorState> actuatorStates;
+
+
 
     public String getUserName() {
         return userName;
@@ -109,4 +120,18 @@ public class User implements Serializable {
     public void setUserLeafHouse(boolean userLeafHouse) {
         this.userLeafHouse = userLeafHouse;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "userName=" + userName + ", userPassword=" + userPassword + ", userEmail=" + userEmail + ", userAdmin=" + userAdmin + ", userLeafHouse=" + userLeafHouse + '}';
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
 }

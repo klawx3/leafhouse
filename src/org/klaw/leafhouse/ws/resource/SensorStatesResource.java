@@ -25,7 +25,7 @@ import org.klaw.leafhouse.ws.service.SensorService;
 public class SensorStatesResource {
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<SensorState> getAllSensorStates(@PathParam("sensorId") int sensorId,
             @BeanParam BoundsBean bounds) {
         if(bounds.isPaginationSet()){
@@ -36,11 +36,11 @@ public class SensorStatesResource {
             Date endDate =new Date(bounds.getEndDate());
             return SensorService.getSensorStates(sensorId,startDate,endDate);            
         }
-        return SensorService.getSensorStates(sensorId);
+        return SensorService.getSensorStates(sensorId,0,9); 
     }
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{sensorStateId}")
     public SensorState getSensorState(@PathParam("sensorId") int sensorId,
             @PathParam("sensorStateId") int sensorStateId){

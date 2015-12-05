@@ -22,7 +22,7 @@ import org.klaw.leafhouse.ws.service.ApiInfoService;
 public class ApiInfoResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public ApiInfo getApiInfo(@Context UriInfo uriInfo) {
 
         return ApiInfoService.getApiInfo(uriInfo);

@@ -11,18 +11,18 @@ import com.pi4j.io.gpio.PinState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.klaw.binding.LeafHouseComponents;
+import org.klaw.binding.components.LeafHouseComponents;
 
 /**
  *
  * @author Klaw Strife
  */
-public class ConfigurationFileValidator {
+public class LeafHouseComponentsFileValidator {
     
     private final LeafHouseComponents leafHouseComponents;
     private final List<String> invalidEntries;
 
-    public ConfigurationFileValidator(LeafHouseComponents leafHouseComponents) {
+    public LeafHouseComponentsFileValidator(LeafHouseComponents leafHouseComponents) {
         this.leafHouseComponents = leafHouseComponents;
         invalidEntries = new ArrayList<>();
         validate();

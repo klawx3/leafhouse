@@ -4,4 +4,5 @@
     <system systemId="file:/C:/Users/Klaw%20Strife/Documents/NetBeansProjects/LeafHouseOnlyHibernateDb/src/org/klaw/leafhouse/config/leafhouse_components.xsd" uri="xml-resources/jaxb/lhcompbind/leafhouse_components.xsd"/>
     <system systemId="file:/C:/Users/Klaw%20Strife/Documents/NetBeansProjects/LeafHouseOnlyHibernateDb/src/org/klaw/leafhouse/config/lhcomp_klaw.xsd" uri="xml-resources/jaxb/lhcompbuild/lhcomp_klaw.xsd"/>
     <system systemId="file:/C:/Users/Klaw%20Strife/Documents/NetBeansProjects/leafhouse_server/lhcomp_klaw.xsd" uri="xml-resources/jaxb/lhcmpbind/lhcomp_klaw.xsd"/>
+    <system systemId="file:/C:/Users/Klaw%20Strife/Documents/NetBeansProjects/leafhouse_server/lhconfig_klaw.xsd" uri="xml-resources/jaxb/lhconfig_bind/lhconfig_klaw.xsd"/>
 </catalog>

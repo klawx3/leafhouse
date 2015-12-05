@@ -23,13 +23,13 @@ public class ActuatorResource {
     
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Actuator> getAllActuators(){
         return ActuatorService.getAllActuators();        
     }
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{actuatorId}")
     public Actuator getActuator(@PathParam("actuatorId") int actuatorId){
         return ActuatorService.getActuator(actuatorId);        

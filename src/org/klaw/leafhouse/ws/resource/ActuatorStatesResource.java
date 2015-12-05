@@ -23,7 +23,7 @@ import org.klaw.leafhouse.ws.service.ActuatorService;
 public class ActuatorStatesResource {
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<ActuatorState> getActuatorStates(@PathParam("actuatorId") int actuatorId,
             @BeanParam BoundsBean bounds){
         if(bounds.isPaginationSet()){
@@ -35,12 +35,12 @@ public class ActuatorStatesResource {
             return ActuatorService.getActuatorStates(actuatorId, startDate, endDate);
         }
         //default bounds
-        return ActuatorService.getActuatorStates(actuatorId,1,10);
+        return ActuatorService.getActuatorStates(actuatorId,0,9);
     }
     
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{actuatorStateId}")
     public ActuatorState getActuatorState(@PathParam("actuatorId") int actuatorId,
             @PathParam("actuatorStateId") int actuatorStateId){        

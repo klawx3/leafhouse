@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="leafHouseConfiguration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="mainUser">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="name"/>
+              <xs:element type="xs:string" name="gmailPassword"/>
+              <xs:element type="xs:string" name="gmail"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="security">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:int" name="functionBreakTimeMillis"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

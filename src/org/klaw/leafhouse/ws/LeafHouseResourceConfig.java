@@ -5,6 +5,7 @@
  */
 package org.klaw.leafhouse.ws;
 
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.klaw.leafhouse.ws.exceptions.GenericException;
 import org.klaw.leafhouse.ws.filters.AuthorizationRequestFilter;
@@ -24,6 +25,7 @@ public class LeafHouseResourceConfig extends ResourceConfig {
 
     public LeafHouseResourceConfig() {        
         super(
+                //REST
                 SecurityResource.class,
                 SecurityResource.class,
                 UsersResource.class,
@@ -35,8 +37,11 @@ public class LeafHouseResourceConfig extends ResourceConfig {
                 //Filters
                 AuthorizationRequestFilter.class,
                 //Exceptions
-                GenericException.class
+                //GenericException.class,
+                //JSON
+                JacksonFeature.class
         );
+
     }
 
     

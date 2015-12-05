@@ -7,14 +7,14 @@ package org.klaw.leafhouse.files;
 
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import org.klaw.binding.LeafHouseComponents;
-import org.klaw.binding.ObjectFactory;
+import org.klaw.binding.components.LeafHouseComponents;
+import org.klaw.binding.config.LeafHouseConfiguration;
+
 
 import org.klaw.leafhouse.exceptions.LeafHouseComponentsFileException;
 
@@ -25,13 +25,12 @@ import org.klaw.leafhouse.exceptions.LeafHouseComponentsFileException;
 public class LeafHouseFiles {
   
     public static final String COMPONENTS_FILENAME = "leafhouse_components.xml";
-    public static final String CONFIGURATION_FILENAME = "leafhouse_configuration.xml";    
+    public static final String CONFIGURATION_FILENAME = "leafhouse_configuration.xml";   
     
 
-    private static LeafHouseFiles instance;
-    private Unmarshaller unmarshaller;
-    
+    private static LeafHouseFiles instance;    
     private LeafHouseComponents leafHouseComponents;
+    private LeafHouseConfiguration leafHouseConfiguration;
 
     public static LeafHouseFiles getInstance() throws LeafHouseComponentsFileException {
         if (instance != null) {
@@ -41,22 +40,42 @@ public class LeafHouseFiles {
     }
     
     private LeafHouseFiles() throws LeafHouseComponentsFileException{
+        loadComponents();
+        loadConfiguration();
+    }
+
+    private void loadComponents() throws LeafHouseComponentsFileException {
         try {
-            JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
-            unmarshaller = context.createUnmarshaller();
+            JAXBContext context = JAXBContext.newInstance(org.klaw.binding.components.ObjectFactory.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
             leafHouseComponents = (LeafHouseComponents) unmarshaller.unmarshal(new File(COMPONENTS_FILENAME));
-            ConfigurationFileValidator validator = new ConfigurationFileValidator(leafHouseComponents);
-            if(!validator.isValid()){
+            LeafHouseComponentsFileValidator validator = new LeafHouseComponentsFileValidator(leafHouseComponents);
+            if (!validator.isValid()) {
                 throw new LeafHouseComponentsFileException(validator.getInvalidEntries());
             }
+
         } catch (JAXBException ex) {
             Logger.getLogger(LeafHouseFiles.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private void loadConfiguration() {
+        try {
+            JAXBContext context = JAXBContext.newInstance(org.klaw.binding.config.ObjectFactory.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            leafHouseConfiguration = (LeafHouseConfiguration) unmarshaller.unmarshal(new File(CONFIGURATION_FILENAME));
+
+        } catch (JAXBException ex) {
+            Logger.getLogger(LeafHouseFiles.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public LeafHouseComponents getLeafHouseComponents() {
         return leafHouseComponents;
+    }
+
+    public LeafHouseConfiguration getLeafHouseConfiguration() {
+        return leafHouseConfiguration;
     }
 
 

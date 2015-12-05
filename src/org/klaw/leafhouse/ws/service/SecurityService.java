@@ -47,7 +47,8 @@ public class SecurityService {
     public static SecurityState getLastSecurityState() {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         ses.beginTransaction();        
-        Query query = ses.createQuery("from SecurityState");
+        Query query = ses.createQuery("from SecurityState order by securityStateId");
+        query.setFirstResult(0);
         query.setMaxResults(1);
         List<SecurityState> list = query.list();
         SecurityState last = list.get(0);

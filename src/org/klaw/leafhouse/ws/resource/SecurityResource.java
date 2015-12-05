@@ -33,14 +33,14 @@ public class SecurityResource {
     @Context UriInfo uriInfo;
 
     @GET
-    @Produces(MediaType.APPLICATION_XML )
+    @Produces(MediaType.APPLICATION_JSON )
     public SecurityInformation getSecurity() {        
         return SecurityService.getSecurityInformation(uriInfo);
     }
 
     @Path("/states")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<SecurityState> getSecurityStates(@BeanParam BoundsBean bounds) {
         List<SecurityState> allSecurityState = null;
         if (bounds.isPaginationSet()) {
@@ -48,9 +48,9 @@ public class SecurityResource {
         } else if (bounds.isDateBoundSet()) {
             Date startDate = new Date(bounds.getStartDate());
             Date endDate = new Date(bounds.getEndDate());
-            SecurityService.getAllSecurityStates(startDate, endDate);
+            allSecurityState = SecurityService.getAllSecurityStates(startDate, endDate);
         } else {
-            SecurityService.getAllSecurityStates(1, 10); // standar
+            allSecurityState = SecurityService.getAllSecurityStates(0,9); // standar
         }
         //for -> solo muestra informacion necesaria para el cliente
         allSecurityState.forEach(securityState -> securityState.setRawUserName(securityState.getUser().getUserName()));
@@ -59,7 +59,7 @@ public class SecurityResource {
 
     @Path("/breach")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<SensorState> getSecurityBreach(@BeanParam BoundsBean bounds) {
         if (bounds.isPaginationSet()) {
             return SecurityService.getAllSecurityBreach(bounds.getStart(),bounds.getSize());
@@ -69,13 +69,13 @@ public class SecurityResource {
             Date endDate = new Date(bounds.getEndDate());
             return SecurityService.getAllSecurityBreach(startDate,endDate);
         }
-        return SecurityService.getAllSecurityBreach(1,10);
+        return SecurityService.getAllSecurityBreach(0,9);
 
     }
 
     @Path("/states/{stateId}")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public SecurityState getSecurityStates(@PathParam("stateId") int stateId) {        
         SecurityState securityState = SecurityService.getSecurityState(stateId);
         securityState.setRawUserName(securityState.getUser().getUserName());

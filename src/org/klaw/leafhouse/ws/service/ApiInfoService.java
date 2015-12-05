@@ -22,7 +22,7 @@ public class ApiInfoService {
     private static final String VERSION = "v1.0";
     private static final String HELP_URL = "http://www.leafhouse.com/api";
     private static final String DEVELOPER = "klawx3@gmail.com";
-    private static final String WELCOME_MESSAGE = "Hello leafhouse";
+    private static final String WELCOME_MESSAGE = "Hello leafhouse now on json";
 
     public static ApiInfo getApiInfo(UriInfo uriInfo) {
         List<Link> rootResourcesPath = new ArrayList<>();
@@ -41,6 +41,9 @@ public class ApiInfoService {
         rootResourcesPath.add(new Link(uriInfo.getBaseUriBuilder()
                 .path(UsersResource.class).build().toString(),
                 "Show all users"));
+        rootResourcesPath.add(new Link(uriInfo.getBaseUriBuilder()
+                .path("application.wadl").build().toString(),
+                "WADL"));
         ApiInfo apiInfo = new ApiInfo();
         apiInfo.setDeveloper(DEVELOPER);
         apiInfo.setHelpUrl(HELP_URL);

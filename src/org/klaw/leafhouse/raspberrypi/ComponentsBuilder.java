@@ -13,9 +13,9 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import org.klaw.binding.LeafHouseComponents;
-import org.klaw.binding.LeafHouseComponents.Actuator;
-import org.klaw.binding.LeafHouseComponents.Sensor;
+import org.klaw.binding.components.LeafHouseComponents;
+import org.klaw.binding.components.LeafHouseComponents.Actuator;
+import org.klaw.binding.components.LeafHouseComponents.Sensor;
 
 import java.util.ArrayList;
 import java.util.List;
