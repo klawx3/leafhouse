@@ -46,11 +46,11 @@ public class ComponentsBuilder {
         leafHouseComponents.getActuator().forEach(this::buildActuator);
     }
 
-    public void addListener(GpioPinListenerDigital listener) {
+    public void addSensorListener(GpioPinListenerDigital listener) {
         listeners.add(listener);
     }
 
-    public void removeListener(GpioPinListenerDigital listener) {
+    public void removeSensorListener(GpioPinListenerDigital listener) {
         listeners.remove(listener);
     }
 

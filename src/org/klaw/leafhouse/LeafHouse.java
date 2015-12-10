@@ -17,7 +17,7 @@ import org.klaw.leafhouse.files.SyncFilesDatabaseUtil;
 import org.klaw.leafhouse.mail.GMailSender;
 import org.klaw.leafhouse.mail.LeafHousePrimaryAuthenticator;
 
-import org.klaw.leafhouse.raspberrypi.LeafHouseRpiComponents;
+import org.klaw.leafhouse.raspberrypi.LeafHouseGpioHandler;
 import org.klaw.leafhouse.ws.HTTPServer;
 
 /**
@@ -28,12 +28,12 @@ public class LeafHouse extends HTTPServer {
     private final static boolean NO_RPI_TEST = true;
 
     private final LeafHouseFiles files = LeafHouseFiles.getInstance();
-    private LeafHouseRpiComponents rpi_components;
+    private LeafHouseGpioHandler rpi_components;
     private final GMailSender gmailSender;
 
     public LeafHouse() throws LeafHouseComponentsFileException {
         super(true);
-        DummieDataUtil.genDummieData();
+        //DummieDataUtil.genDummieData();
         SyncFilesDatabaseUtil.sync(files);
         gmailSender = new GMailSender(new LeafHousePrimaryAuthenticator(
                 files.getLeafHouseConfiguration()
@@ -43,7 +43,7 @@ public class LeafHouse extends HTTPServer {
                 .getMainUser()
                 .getGmailPassword()));
         if (!NO_RPI_TEST) {
-            rpi_components = new LeafHouseRpiComponents(files.getLeafHouseComponents(), gmailSender);
+            rpi_components = new LeafHouseGpioHandler(files.getLeafHouseComponents(), gmailSender);
         }
     }
 

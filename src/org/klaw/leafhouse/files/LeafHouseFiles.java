@@ -7,6 +7,7 @@ package org.klaw.leafhouse.files;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -40,8 +41,10 @@ public class LeafHouseFiles {
     }
     
     private LeafHouseFiles() throws LeafHouseComponentsFileException{
-        loadComponents();
-        loadConfiguration();
+        
+            loadComponents();
+            loadConfiguration();
+        
     }
 
     private void loadComponents() throws LeafHouseComponentsFileException {
@@ -56,6 +59,7 @@ public class LeafHouseFiles {
 
         } catch (JAXBException ex) {
             Logger.getLogger(LeafHouseFiles.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(1);
         }
     }
 
@@ -67,6 +71,7 @@ public class LeafHouseFiles {
 
         } catch (JAXBException ex) {
             Logger.getLogger(LeafHouseFiles.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(1);
         }
     }
 

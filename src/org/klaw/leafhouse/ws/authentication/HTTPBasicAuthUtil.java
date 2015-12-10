@@ -14,14 +14,18 @@ import java.util.Base64;
  */
 public class HTTPBasicAuthUtil {
 
+    private static final String BASIC = "Basic";
+    
     public static String encodeBasicAuthWithBasicString(HTTPBasicUser user) {
         return "Basic " + HTTPBasicAuthUtil.encodeBasicAuth(user);
     }
     
     public static HTTPBasicUser decodeBasicAuthWithBasicString(String encoded){
         String[] split = encoded.split(" ");
-        if(split[0].equals("Basic")){
-            return decodeBasicAuth(split[1]);
+        if (split.length == 2) {
+            if (split[0].equalsIgnoreCase(BASIC)) {
+                return decodeBasicAuth(split[1]);
+            }
         }
         return null;
     }

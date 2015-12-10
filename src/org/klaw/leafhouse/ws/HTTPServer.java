@@ -48,7 +48,7 @@ public class HTTPServer {
     }
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost").port(PORT).build();
+        return UriBuilder.fromUri("http://0.0.0.0").port(PORT).build();
     }
 
 }

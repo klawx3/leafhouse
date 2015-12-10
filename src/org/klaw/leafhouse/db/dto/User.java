@@ -36,7 +36,7 @@ public class User implements Serializable {
     @Column(unique = true)
     private String userName;
     @Column(nullable = false)
-    @XmlElement
+    //@XmlElement
     private String userPassword;
     @Column(nullable = false)
     @XmlElement

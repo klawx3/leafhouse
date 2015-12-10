@@ -5,7 +5,7 @@
  */
 package org.klaw.leafhouse.ws.resource;
 
-
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.BeanParam;
@@ -30,19 +30,25 @@ import org.klaw.leafhouse.ws.service.*;
  */
 @Path("/security")
 public class SecurityResource {
-    @Context UriInfo uriInfo;
+
+    @Context
+    UriInfo uriInfo;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON )
-    public SecurityInformation getSecurity() {        
-        return SecurityService.getSecurityInformation(uriInfo);
+    @Produces(MediaType.APPLICATION_JSON)
+    public SecurityInformation getSecurityInformation() {
+        SecurityInformation securityInformation = SecurityService.getSecurityInformation(uriInfo);
+        securityInformation.setLink(getUriFromSelf(), "self");
+        securityInformation.setLink(getUriFromStates(), "security changes");
+        securityInformation.setLink(getUriFromBreach(), "security breach");
+        return securityInformation;
     }
 
     @Path("/states")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<SecurityState> getSecurityStates(@BeanParam BoundsBean bounds) {
-        List<SecurityState> allSecurityState = null;
+        List<SecurityState> allSecurityState;
         if (bounds.isPaginationSet()) {
             allSecurityState = SecurityService.getAllSecurityStates(bounds.getStart(), bounds.getSize());
         } else if (bounds.isDateBoundSet()) {
@@ -50,10 +56,16 @@ public class SecurityResource {
             Date endDate = new Date(bounds.getEndDate());
             allSecurityState = SecurityService.getAllSecurityStates(startDate, endDate);
         } else {
-            allSecurityState = SecurityService.getAllSecurityStates(0,9); // standar
+            allSecurityState = SecurityService.getAllSecurityStates(0, 9); // standar
         }
-        //for -> solo muestra informacion necesaria para el cliente
-        allSecurityState.forEach(securityState -> securityState.setRawUserName(securityState.getUser().getUserName()));
+        if (allSecurityState != null) { // precaucion
+            if (allSecurityState.isEmpty()) {// esto arregla el contenido vacio
+                return null;
+            }
+            allSecurityState.forEach(securityState
+                    -> securityState.setRawUserName(securityState.getUser()
+                            .getUserName()));  //for -> solo muestra informacion necesaria para el cliente
+        }
         return allSecurityState;
     }
 
@@ -61,25 +73,52 @@ public class SecurityResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<SensorState> getSecurityBreach(@BeanParam BoundsBean bounds) {
+        List<SensorState> securityBreach;
         if (bounds.isPaginationSet()) {
-            return SecurityService.getAllSecurityBreach(bounds.getStart(),bounds.getSize());
-        }
-        if (bounds.isDateBoundSet()) {
+            securityBreach = SecurityService.getAllSecurityBreach(bounds.getStart(), bounds.getSize());
+        } else if (bounds.isDateBoundSet()) {
             Date startDate = new Date(bounds.getStartDate());
             Date endDate = new Date(bounds.getEndDate());
-            return SecurityService.getAllSecurityBreach(startDate,endDate);
+            securityBreach = SecurityService.getAllSecurityBreach(startDate, endDate);
+        } else {
+            securityBreach = SecurityService.getAllSecurityBreach(0, 9);
         }
-        return SecurityService.getAllSecurityBreach(0,9);
-
+        if (securityBreach != null) {
+            if (!securityBreach.isEmpty()) {
+                return securityBreach;
+            }
+        }
+        return null;
     }
 
     @Path("/states/{stateId}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public SecurityState getSecurityStates(@PathParam("stateId") int stateId) {        
-        SecurityState securityState = SecurityService.getSecurityState(stateId);
-        securityState.setRawUserName(securityState.getUser().getUserName());
-        return securityState;        
+    public SecurityState getSecurityStates(@PathParam("stateId") int stateId) {
+
+        return SecurityService.getSecurityState(stateId);
     }
 
+    private String getUriFromSelf() {
+        URI build = uriInfo.getBaseUriBuilder()
+                .path(SecurityResource.class)
+                .build();
+        return build.toString();
+    }
+
+    private String getUriFromStates() {
+        URI build = uriInfo.getBaseUriBuilder()
+                .path(SecurityResource.class)
+                .path("states")
+                .build();
+        return build.toString();
+    }
+
+    private String getUriFromBreach() {
+        URI build = uriInfo.getBaseUriBuilder()
+                .path(SecurityResource.class)
+                .path("breach")
+                .build();
+        return build.toString();
+    }
 }

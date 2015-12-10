@@ -118,4 +118,11 @@ public class Actuator implements Serializable {
                 fileActuator.getAttachedGpioPin().intValue(), location);
     }
 
+    @Override
+    public String toString() {
+        return "Actuator{" + "actuatorId=" + actuatorId + ", actuatorGpioPin="
+                + actuatorGpioPin + ", actuatorName=" + actuatorName + ", actuatorDescription=" + actuatorDescription
+                + ", actuatorLocation=" + actuatorLocation + ", actuatorStates=" + actuatorStates + '}';
+    }
+
 }

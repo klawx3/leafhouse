@@ -121,12 +121,14 @@ public class SecurityThreshhold {
 
     private int getReflexFunctionVsTime() {
         SecurityState securityState = getSecurityStateDto();
-        if (securityState.isSecurityEnabled()) {
-            long activatedTime = securityState.getModifiedDate().getTimeInMillis();
-            if (activatedTime > functionBreakTimeMillis) {
-                return POST_BREAK_FUNCTION_REFLEX_VALUE;
-            } else {
-                return PRE_BREAK_FUNCTION_REFLEX_VALUE;
+        if (securityState != null) {
+            if (securityState.isSecurityEnabled()) {
+                long activatedTime = securityState.getModifiedDate().getTimeInMillis();
+                if (activatedTime > functionBreakTimeMillis) {
+                    return POST_BREAK_FUNCTION_REFLEX_VALUE;
+                } else {
+                    return PRE_BREAK_FUNCTION_REFLEX_VALUE;
+                }
             }
         }
         return NOT_DEFINED;

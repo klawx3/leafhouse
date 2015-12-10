@@ -6,22 +6,55 @@
 package org.klaw.leafhouse.ws.filters;
 
 //import com.sun.jersey.spi.container.ContainerRequest;
-
 import java.io.IOException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Response.Status;
+import org.klaw.leafhouse.db.dto.User;
+import org.klaw.leafhouse.ws.authentication.HTTPBasicAuthUtil;
+import org.klaw.leafhouse.ws.authentication.HTTPBasicUser;
+import org.klaw.leafhouse.ws.service.UserService;
 
 //import com.sun.jersey.spi.container.ContainerRequestFilter;
-
 /**
  *
  * @author Klaw Strife
  */
 public class AuthorizationRequestFilter implements ContainerRequestFilter {
 
+    private static final String BASIC = "Basic";
+
     @Override
     public void filter(ContainerRequestContext crc) throws IOException {
-        //System.out.println("Pasando por filter <3");
+        String auth = crc.getHeaders().getFirst("Authorization");
+
+        if (auth == null) {
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+
+        HTTPBasicUser user = HTTPBasicAuthUtil.decodeBasicAuthWithBasicString(auth);
+
+        if (user == null) {
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+
+        if (!isValid(user)) {
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+    }
+
+    private boolean isValid(HTTPBasicUser httpUser) {
+        User validUser = null;
+        for (User dtoUser : UserService.getAllUsers()) {
+            if (dtoUser.getUserName().equals(httpUser.getUsername())
+                    && dtoUser.getUserPassword().equals(httpUser.getPassword())) {
+                validUser = dtoUser;
+                break;
+            }
+        }
+        return validUser != null;
+
     }
 
 }

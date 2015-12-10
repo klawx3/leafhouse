@@ -7,6 +7,7 @@ package org.klaw.leafhouse.ws;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.klaw.leafhouse.ws.exceptions.GenericException;
 import org.klaw.leafhouse.ws.filters.AuthorizationRequestFilter;
 import org.klaw.leafhouse.ws.resource.ActuatorResource;
@@ -35,13 +36,14 @@ public class LeafHouseResourceConfig extends ResourceConfig {
                 ApiInfoResource.class,
                 ActuatorResource.class,
                 //Filters
-                AuthorizationRequestFilter.class,
+                //AuthorizationRequestFilter.class,
                 //Exceptions
                 //GenericException.class,
                 //JSON
                 JacksonFeature.class
         );
-
+//        property(ServerProperties.TRACING, "ALL");
+//        property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
     }
 
     

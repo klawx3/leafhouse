@@ -26,53 +26,68 @@ public class SyncFilesDatabaseUtil {
         syncUserConfiguration(files);
         syncComponents(files);
     }
-    
+
     private static void syncComponents(LeafHouseFiles files) {
         LeafHouseComponents components = files.getLeafHouseComponents();
-        components.getActuator().forEach(SyncFilesDatabaseUtil::syncActuator);
-        components.getSensor().forEach(SyncFilesDatabaseUtil::syncSensor);        
+        components.getActuator().stream()
+                .forEach(SyncFilesDatabaseUtil::syncActuator);
+        components.getSensor().stream()
+                .forEach(SyncFilesDatabaseUtil::syncSensor);
     }
-    
-    private static void syncActuator(LeafHouseComponents.Actuator xmlActuator){
+
+    private static void syncActuator(LeafHouseComponents.Actuator xmlActuator) {
         int gpioActuatorFilePin = xmlActuator.getAttachedGpioPin().intValue();
         Actuator dtoActuator = getActuatorDtoByPin(gpioActuatorFilePin);
-        if(dtoActuator != null){ // existe el actuador
-            if(!dtoActuator.isEqualsToFileActuator(xmlActuator)){
+        if (dtoActuator != null) { // existe el actuador
+            if (!dtoActuator.isEqualsToFileActuator(xmlActuator)) {
                 saveOrUpdateXmlActuatorToDatabase(xmlActuator, dtoActuator);
-            }else{
+            } else {
                 System.out.println("Nada que hacer el actuador es igual a la de la bd");
             }
-        }else{
+        } else {
             Location location = getLocationByName(xmlActuator.getLocation());
-            if(location == null){
+            if (location == null) {
                 location = new Location(xmlActuator.getLocation());
+                saveLocationToDatabase(location);
             }
             saveActuatorToDatabase(Actuator.convertFileActuator(xmlActuator,
                     location));
         }
     }
-    
-    private static void syncSensor(LeafHouseComponents.Sensor xmlSensor){
+
+    private static void syncSensor(LeafHouseComponents.Sensor xmlSensor) {
+        System.out.println("Printing (file): " + xmlSensor.toString());
         int gpioSensorFilePin = xmlSensor.getAttachedGpioPin().intValue();
         Sensor dtoSensor = getSensorDtoByPin(gpioSensorFilePin);
-        if(dtoSensor != null){
-            if(!dtoSensor.isEqualsToFileSensor(xmlSensor)){
+        if (dtoSensor != null) {
+            if (!dtoSensor.isEqualsToFileSensor(xmlSensor)) {
                 saveOrUpdateXmlSensorToDatabase(xmlSensor, dtoSensor);
-            }else{
+            } else {
                 System.out.println("El sensor es igual a la base de datos");
             }
-        }else{
+        } else {
             Location location = getLocationByName(xmlSensor.getLocation());
-            if(location == null){
+            if (location == null) {
                 location = new Location(xmlSensor.getLocation());
+                saveLocationToDatabase(location);
             }
             saveSensorToDatabase(Sensor.convertFileSensor(xmlSensor,
                     location));
         }
-        
+
+    }
+    
+    private static void saveLocationToDatabase(Location location){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();        
+        session.save(location);
+        session.getTransaction().commit();
+        session.close();
     }
 
+
     private static void saveSensorToDatabase(Sensor sensor) {
+        System.err.println("Saving sensor:" + sensor.toString());
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(sensor);
@@ -81,6 +96,7 @@ public class SyncFilesDatabaseUtil {
     }
 
     private static void saveActuatorToDatabase(Actuator actuator) {
+        System.err.println("Saving actuator:" + actuator.toString());
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(actuator);
@@ -95,7 +111,14 @@ public class SyncFilesDatabaseUtil {
         Sensor sensor = (Sensor) session.get(Sensor.class, dtoSensor.getSensorId());
         sensor.setDescription(fileSensor.getDescription());
         sensor.setSensorGpioPin(fileSensor.getAttachedGpioPin().intValue());
-        sensor.getSensorLocation().setLocationName(fileSensor.getLocation());
+        
+        Location location = getLocationByName(fileSensor.getLocation());
+        if(location == null){
+            location = new Location(fileSensor.getLocation());
+            saveLocationToDatabase(location);
+        }
+        sensor.setSensorLocation(location);
+        
         sensor.setSensorName(fileSensor.getName());
         sensor.setSensorType(SensorType.valueOf(fileSensor.getType()));
         session.saveOrUpdate(sensor);
@@ -103,14 +126,19 @@ public class SyncFilesDatabaseUtil {
         session.close();
 
     }
-    
+
     private static void saveOrUpdateXmlActuatorToDatabase(
-            LeafHouseComponents.Actuator fileActuator,Actuator dtoActuator) {
+            LeafHouseComponents.Actuator fileActuator, Actuator dtoActuator) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         Actuator actuator = (Actuator) session.get(Actuator.class, dtoActuator.getActuatorId());
-        actuator.setActuatorDescription(fileActuator.getDescription());        
-        actuator.getActuatorLocation().setLocationName(fileActuator.getLocation()); // ver si esto funciona. si actualiza la ubicacion relacionada
+        actuator.setActuatorDescription(fileActuator.getDescription());
+        Location location = getLocationByName(fileActuator.getLocation());
+        if(location == null){
+            location = new Location(fileActuator.getLocation());
+            saveLocationToDatabase(location);
+        }
+        actuator.setActuatorLocation(location);
         actuator.setActuatorName(fileActuator.getName());
         actuator.setActuatorGpioPin(fileActuator.getAttachedGpioPin().intValue()); // no deberia pasar ya que se compara abtes
         session.saveOrUpdate(actuator);
@@ -118,7 +146,7 @@ public class SyncFilesDatabaseUtil {
         session.close();
 
     }
-    
+
     private static Location getLocationByName(String locationName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -154,9 +182,7 @@ public class SyncFilesDatabaseUtil {
         session.close();
         return actuator;
     }
-    
 
-    
     private static void syncUserConfiguration(LeafHouseFiles files) {
         LeafHouseConfiguration configuration = files.getLeafHouseConfiguration();
         MainUser xmlUser = configuration.getMainUser();
@@ -164,8 +190,8 @@ public class SyncFilesDatabaseUtil {
         if (databaseUser != null) {
             if (!isUserEquals(xmlUser, databaseUser)) {
                 setXmlUserToDatabase(xmlUser, databaseUser);
-            }else{
-                System.err.println("User "+databaseUser.getUserName() +" already added. skipping");
+            } else {
+                System.err.println("User " + databaseUser.getUserName() + " already added. skipping");
             }
         } else {
             addXmlUserToDatabase(xmlUser);
@@ -177,7 +203,7 @@ public class SyncFilesDatabaseUtil {
                 && xmlUser.getGmail().equalsIgnoreCase(databaseUser.getUserEmail())
                 && xmlUser.getGmailPassword().equals(databaseUser.getUserPassword());
     }
-    
+
     private static void addXmlUserToDatabase(MainUser xmlUser) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -192,7 +218,7 @@ public class SyncFilesDatabaseUtil {
         session.close();
     }
 
-    private static void setXmlUserToDatabase(MainUser xmlUser,User databaseUser) {
+    private static void setXmlUserToDatabase(MainUser xmlUser, User databaseUser) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         User user = (User) session.get(User.class, databaseUser.getUserId());
@@ -208,7 +234,6 @@ public class SyncFilesDatabaseUtil {
     private static User getLeafHouseMainUser() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
         User user = (User) session.createQuery("from User where userLeafHouse = :param1")
                 .setParameter("param1", Boolean.TRUE)
                 .uniqueResult();
@@ -216,6 +241,5 @@ public class SyncFilesDatabaseUtil {
         session.close();
         return user;
     }
-
 
 }

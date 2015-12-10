@@ -26,33 +26,28 @@ import org.klaw.leafhouse.ws.resource.SecurityResource;
 public class SecurityService {
 
     public static SecurityInformation getSecurityInformation(UriInfo uriInfo) {
-        SecurityState lastSecurityState = SecurityService.getLastSecurityState();
         SecurityThreshhold securityThreshhold = SecurityThreshhold.getInstance();
-        List<Link> links = new ArrayList<>();
-        links.add(new Link(uriInfo.getBaseUriBuilder()
-                .path(SecurityResource.class)
-                .build()
-                .toString(), "self"));
-        links.add(new Link(uriInfo.getBaseUriBuilder()
-                .path(SecurityResource.class)
-                //.path(SecurityResource.class,"getSecurityStates")
-                .path(Integer.toString(lastSecurityState.getsecurityStateId()))
-                .toString(), "self"));
-        
         return new SecurityInformation(securityThreshhold.getRiskByEstimulation(),
-                lastSecurityState,
-                links);
+                SecurityService.getLastSecurityState());
+    }
+    
+    public static boolean isSecurityEnabled(){
+        SecurityState lastSecurityState = getLastSecurityState();
+        if(lastSecurityState != null){
+            return lastSecurityState.isSecurityEnabled();
+        }
+        return false;
     }
 
     public static SecurityState getLastSecurityState() {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         ses.beginTransaction();        
-        Query query = ses.createQuery("from SecurityState order by securityStateId");
-        query.setFirstResult(0);
-        query.setMaxResults(1);
-        List<SecurityState> list = query.list();
-        SecurityState last = list.get(0);
-        last.setRawUserName(last.getUser().getUserName());
+        SecurityState last = (SecurityState)ses.createQuery("from SecurityState order by securityStateId DESC")
+                .setMaxResults(1)
+                .uniqueResult(); //securityStateId
+        if (last != null) {
+            last.setRawUserName(last.getUser().getUserName());
+        }
         ses.getTransaction().commit();
         ses.close();
         return last;
@@ -99,6 +94,9 @@ public class SecurityService {
         SecurityState securityState = (SecurityState) ses.get(SecurityState.class, stateId);
         ses.getTransaction().commit();
         ses.close();
+        if (securityState != null) {
+            securityState.setRawUserName(securityState.getUser().getUserName());
+        }
         return securityState;
     }
 

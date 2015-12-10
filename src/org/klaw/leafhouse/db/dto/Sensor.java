@@ -63,9 +63,10 @@ public class Sensor implements Serializable {
     public Sensor() {
     }
 
-    public Sensor(String sensorName, String description, Location sensorLocation, SensorType sensorType) {
+    public Sensor(String sensorName, String description,int sensorGpioPin, Location sensorLocation, SensorType sensorType) {
         this.sensorName = sensorName;
         this.description = description;
+        this.sensorGpioPin = sensorGpioPin;
         this.sensorLocation = sensorLocation;
         this.sensorType = sensorType;
     }
@@ -135,8 +136,15 @@ public class Sensor implements Serializable {
     }
 
     public static Sensor convertFileSensor(LeafHouseComponents.Sensor sensor, Location location) {
-        return new Sensor(sensor.getName(), sensor.getDescription(),
+        return new Sensor(sensor.getName(), sensor.getDescription(),sensor.getAttachedGpioPin().intValue(),
                 location, SensorType.valueOf(sensor.getType()));
+    }
+
+    @Override
+    public String toString() {
+        return "Sensor{" + "sensorId=" + sensorId + ", sensorName=" + sensorName
+                + ", description=" + description + ", sensorGpioPin=" + sensorGpioPin
+                + ", sensorLocation=" + sensorLocation + ", sensorType=" + sensorType + ", sensorStates=" + sensorStates + '}';
     }
 
 }

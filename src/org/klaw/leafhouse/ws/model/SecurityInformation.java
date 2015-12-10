@@ -5,6 +5,7 @@
  */
 package org.klaw.leafhouse.ws.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.klaw.leafhouse.db.dto.SecurityState;
@@ -18,7 +19,7 @@ import org.klaw.leafhouse.security.SecurityThreshhold.SecurityRisk;
 public class SecurityInformation {
     private SecurityRisk securityRisk;
     private SecurityState securityState;
-    private List<Link> links;
+    private List<Link> links = new ArrayList<>();
 
     public SecurityInformation() {
     }
@@ -27,6 +28,11 @@ public class SecurityInformation {
         this.securityRisk = securityRisk;
         this.securityState = securityState;
         this.links = links;
+    }
+
+    public SecurityInformation(SecurityRisk securityRisk, SecurityState securityState) {
+        this.securityRisk = securityRisk;
+        this.securityState = securityState;
     }
 
     public SecurityRisk getSecurityRisk() {
@@ -52,4 +58,19 @@ public class SecurityInformation {
     public void setLinks(List<Link> links) {
         this.links = links;
     }
+
+    public void setLink(Link link) {
+        links.add(link);
+    }
+
+    public void setLink(String uri, String rel) {
+        links.add(new Link(uri, rel));
+    }
+
+    @Override
+    public String toString() {
+        return "SecurityInformation{" + "securityRisk=" + securityRisk + ", securityState=" + securityState + ", links=" + links + '}';
+    }
+    
+    
 }

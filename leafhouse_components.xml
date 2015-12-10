@@ -2,8 +2,8 @@
 
 <leafHouseComponents>
     <sensor attachedGpioPin="2" type="CONCURRENT">
-        <name>Sensor</name>
-        <location>Cochera</location>
+        <name>Sensor 2[Modificado]</name>
+        <location>BEST LOCATION 3</location>
         <description>Sensor de puerta o ventana</description>          
         <pinPullResistance>PULL_DOWN</pinPullResistance>
         <onEvent></onEvent>
@@ -13,7 +13,7 @@
     </sensor>
     <sensor attachedGpioPin="3" type="EVENT_FIRED">
         <name>Sensor</name>
-        <location>Cochera</location>
+        <location>wea111</location>
         <description>Sensor de puerta o ventana</description>          
         <pinPullResistance>PULL_DOWN</pinPullResistance>
         <onEvent>CAM</onEvent>
@@ -26,7 +26,7 @@
 
     <actuator attachedGpioPin="4">
         <name>Led rojo</name>
-        <location>Cochera</location>
+        <location>que te importa ?</location>
         <description>LED CTM TERRIBLE DE ROJO</description> 
         <preDefinedFunction>INTERNET_ACCESS_LED</preDefinedFunction>
         <shutdownOptions enabled="true">
@@ -37,7 +37,7 @@
     </actuator>   
     <actuator attachedGpioPin="5">
         <name>Led rojo</name>
-        <location>Cochera</location>
+        <location>wea111</location>
         <description>Sensor de puerta o ventana</description> 
         <preDefinedFunction>INTERNET_ACCESS_LED</preDefinedFunction>
         <shutdownOptions enabled="true">
