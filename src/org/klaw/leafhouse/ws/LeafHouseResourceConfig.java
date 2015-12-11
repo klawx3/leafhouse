@@ -5,6 +5,7 @@
  */
 package org.klaw.leafhouse.ws;
 
+import java.util.logging.Logger;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -23,7 +24,8 @@ import org.klaw.leafhouse.ws.resource.UsersResource;
  * @author Klaw Strife
  */
 public class LeafHouseResourceConfig extends ResourceConfig {
-
+    
+    
     public LeafHouseResourceConfig() {        
         super(
                 //REST
@@ -42,6 +44,7 @@ public class LeafHouseResourceConfig extends ResourceConfig {
                 //JSON
                 JacksonFeature.class
         );
+
 //        property(ServerProperties.TRACING, "ALL");
 //        property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
     }

@@ -5,6 +5,8 @@
  */
 package org.klaw.leafhouse.files;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.klaw.binding.components.LeafHouseComponents;
 import org.klaw.binding.config.LeafHouseConfiguration;
@@ -22,6 +24,8 @@ import org.klaw.leafhouse.types.SensorType;
  */
 public class SyncFilesDatabaseUtil {
 
+    private static final Logger logger = LogManager.getLogger(SyncFilesDatabaseUtil.class.getSimpleName());
+
     public static void sync(LeafHouseFiles files) {
         syncUserConfiguration(files);
         syncComponents(files);
@@ -34,45 +38,67 @@ public class SyncFilesDatabaseUtil {
         components.getSensor().stream()
                 .forEach(SyncFilesDatabaseUtil::syncSensor);
     }
-
+    private static void syncUserConfiguration(LeafHouseFiles files) {
+        LeafHouseConfiguration configuration = files.getLeafHouseConfiguration();
+        MainUser xmlUser = configuration.getMainUser();
+        User databaseUser = getLeafHouseMainUser();
+        if (databaseUser != null) {
+            if (!isUserEquals(xmlUser, databaseUser)) {
+                setXmlUserToDatabase(xmlUser, databaseUser);
+                logger.info("Saved modified user to db: " + databaseUser.toString());
+            } else {
+                logger.trace("User " + databaseUser.getUserName() + " already added, skipping");
+            }
+        } else {
+            addXmlUserToDatabase(xmlUser);
+            logger.info("Saved user to db: " + xmlUser.getName());
+        }
+    }
+    
     private static void syncActuator(LeafHouseComponents.Actuator xmlActuator) {
         int gpioActuatorFilePin = xmlActuator.getAttachedGpioPin().intValue();
         Actuator dtoActuator = getActuatorDtoByPin(gpioActuatorFilePin);
         if (dtoActuator != null) { // existe el actuador
             if (!dtoActuator.isEqualsToFileActuator(xmlActuator)) {
                 saveOrUpdateXmlActuatorToDatabase(xmlActuator, dtoActuator);
+                logger.info("Save modified file actuator: " + xmlActuator.toString());
             } else {
-                System.out.println("Nada que hacer el actuador es igual a la de la bd");
+                logger.trace("Actuator already exist in db: " + xmlActuator.toString());
             }
         } else {
             Location location = getLocationByName(xmlActuator.getLocation());
             if (location == null) {
                 location = new Location(xmlActuator.getLocation());
                 saveLocationToDatabase(location);
+                logger.info("Added new location to database: " + location.getLocationName());
             }
             saveActuatorToDatabase(Actuator.convertFileActuator(xmlActuator,
                     location));
+            logger.info("Saved file actuator to db: " + xmlActuator.toString());
         }
     }
 
     private static void syncSensor(LeafHouseComponents.Sensor xmlSensor) {
-        System.out.println("Printing (file): " + xmlSensor.toString());
+
         int gpioSensorFilePin = xmlSensor.getAttachedGpioPin().intValue();
         Sensor dtoSensor = getSensorDtoByPin(gpioSensorFilePin);
         if (dtoSensor != null) {
             if (!dtoSensor.isEqualsToFileSensor(xmlSensor)) {
                 saveOrUpdateXmlSensorToDatabase(xmlSensor, dtoSensor);
+                logger.info("Modified file actuator: " + xmlSensor.toString());
             } else {
-                System.out.println("El sensor es igual a la base de datos");
+                logger.trace("Actuator already exist in db: " + xmlSensor.toString());
             }
         } else {
             Location location = getLocationByName(xmlSensor.getLocation());
             if (location == null) {
                 location = new Location(xmlSensor.getLocation());
                 saveLocationToDatabase(location);
+                logger.info("Added new location to database: " + location.getLocationName());
             }
             saveSensorToDatabase(Sensor.convertFileSensor(xmlSensor,
                     location));
+            logger.info("Saved file sensor to db: " + xmlSensor.toString());
         }
 
     }
@@ -183,20 +209,7 @@ public class SyncFilesDatabaseUtil {
         return actuator;
     }
 
-    private static void syncUserConfiguration(LeafHouseFiles files) {
-        LeafHouseConfiguration configuration = files.getLeafHouseConfiguration();
-        MainUser xmlUser = configuration.getMainUser();
-        User databaseUser = getLeafHouseMainUser();
-        if (databaseUser != null) {
-            if (!isUserEquals(xmlUser, databaseUser)) {
-                setXmlUserToDatabase(xmlUser, databaseUser);
-            } else {
-                System.err.println("User " + databaseUser.getUserName() + " already added. skipping");
-            }
-        } else {
-            addXmlUserToDatabase(xmlUser);
-        }
-    }
+
 
     private static boolean isUserEquals(MainUser xmlUser, User databaseUser) {
         return xmlUser.getName().equals(databaseUser.getUserName())

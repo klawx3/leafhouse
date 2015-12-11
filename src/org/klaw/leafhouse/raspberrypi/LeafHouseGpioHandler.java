@@ -8,8 +8,7 @@ package org.klaw.leafhouse.raspberrypi;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.mail.MessagingException;
 import org.hibernate.Session;
 import org.klaw.binding.components.LeafHouseComponents;
@@ -24,12 +23,14 @@ import org.klaw.leafhouse.security.SecurityThreshhold;
 import org.klaw.leafhouse.types.SensorOnEvent;
 import org.klaw.leafhouse.types.SensorType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  *
  * @author Klaw Strife
  */
 public class LeafHouseGpioHandler implements GpioPinListenerDigital {
-
+    private static final Logger logger = LogManager.getLogger(LeafHouseGpioHandler.class.getSimpleName());
     private final ComponentsBuilder builder;
     private final GMailSender gmailSender;
     private final User defaultUser;
@@ -47,7 +48,7 @@ public class LeafHouseGpioHandler implements GpioPinListenerDigital {
 
     @Override
     public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-        System.out.println(" --> (SENSOR) GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+        logger.debug(" --> (SENSOR) GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
         if (SecurityService.getLastSecurityState().isSecurityEnabled()) {
             LeafHouseComponents.Sensor eventFileSensor = builder.getLeafHouseComponents().getSensor()
                     .stream()
@@ -62,7 +63,7 @@ public class LeafHouseGpioHandler implements GpioPinListenerDigital {
 
     private void handleEvent(LeafHouseComponents.Sensor eventFileSensor,
             GpioPinDigitalStateChangeEvent event) {
-        System.out.println("Event capturated asociated to +" + eventFileSensor.toString());
+        logger.debug("Event capturated asociated to +" + eventFileSensor.toString());
         boolean sensorSate = event.getState().isHigh();
         switch (SensorType.valueOf(eventFileSensor.getType())) {
             case EVENT_FIRED:
@@ -73,7 +74,7 @@ public class LeafHouseGpioHandler implements GpioPinListenerDigital {
                     try {
                         gmailSender.send(sensorState);
                     } catch (MessagingException ex) {
-                        Logger.getLogger(LeafHouseGpioHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.error(ex.getMessage());
                     }
                 }
 

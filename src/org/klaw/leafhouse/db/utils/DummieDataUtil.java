@@ -6,6 +6,7 @@
 package org.klaw.leafhouse.db.utils;
 
 import java.util.Calendar;
+import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.klaw.leafhouse.db.dto.*;
 import org.klaw.leafhouse.types.SensorType;
@@ -18,6 +19,7 @@ public class DummieDataUtil {
     
     
     public static void genDummieData(){
+
         Session ses = HibernateUtil.getSessionFactory().openSession();
         ses.beginTransaction();
         //du data
